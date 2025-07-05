@@ -85,9 +85,41 @@
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; }
     }
+    header {
+  background-color: #ffffffcc;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+header a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+header img {
+  height: 28px;
+  margin-right: 10px;
+}
+header small {
+  font-size: 0.9em;
+  margin-top: 4px;
+  color: #666;
+}
   </style>
 </head>
 <body>
+  <header>
+  <a href="https://bustena.wordpress.com/" target="_blank">
+    <img src="https://bustena.wordpress.com/wp-content/uploads/2023/02/cropped-icon-piano.png" alt="icono">
+    Historia de la Música
+  </a>
+  <small>Las Tres Edades de la Música Occidental</small>
+</header>
   <main>
     <div id="pantalla-inicial">
       <h2>Selecciona curso y trimestre</h2>
