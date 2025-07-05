@@ -124,61 +124,61 @@
   </main>
 
 <script>
-  const hojaURLs = {
-    H1tr1: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=0&single=true&output=csv',
-    H1tr2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=355259796&single=true&output=csv',
-    H1tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=923004067&single=true&output=csv',
-    H2tr1: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=991944699&single=true&output=csv',
-    H2tr2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1251501192&single=true&output=csv',
-    H2tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1487547326&single=true&output=csv'
-  };
+const hojaURLs = {
+  H1tr1: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=0&single=true&output=csv',
+  H1tr2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=355259796&single=true&output=csv',
+  H1tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=923004067&single=true&output=csv',
+  H2tr1: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=991944699&single=true&output=csv',
+  H2tr2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1251501192&single=true&output=csv',
+  H2tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1487547326&single=true&output=csv'
+};
 
-  const fondoColores = {
-    H1tr1: '#fdecef',
-    H1tr2: '#ffeccf',
-    H1tr3: '#e8f8ec',
-    H2tr1: '#e5f0ff',
-    H2tr2: '#f3e5f5',
-    H2tr3: '#f9fbe7'
-  };
+const fondoColores = {
+  H1tr1: '#fdecef',
+  H1tr2: '#ffeccf',
+  H1tr3: '#e8f8ec',
+  H2tr1: '#e5f0ff',
+  H2tr2: '#f3e5f5',
+  H2tr3: '#f9fbe7'
+};
 
-  function actualizarFondo(clave) {
-    if (fondoColores[clave]) {
-      document.body.style.backgroundColor = fondoColores[clave];
-    }
+let datos = [], actual = -1, aciertos = 0, fallos = 0;
+let cuentaIntervalo, audioTimeout;
+const CONS = 40;
+
+function actualizarFondo(clave) {
+  if (fondoColores[clave]) {
+    document.body.style.backgroundColor = fondoColores[clave];
   }
+}
 
-  function iniciarSesion() {
-    const curso = document.getElementById('select-curso').value;
-    const trimestre = document.getElementById('select-trimestre').value;
-    const clave = `H${curso}tr${trimestre}`;
-    const url = hojaURLs[clave];
-
-    actualizarFondo(clave);
-
-    document.getElementById('boton-empezar').disabled = true;
-    document.getElementById('cargando').classList.remove('hidden');
-
-    fetch(url)
-      .then(res => res.text())
-      .then(texto => {
-        const resultado = Papa.parse(texto, { header: true, skipEmptyLines: true });
-        datos = resultado.data.map(obj => ({
-          autor: obj.Autor,
-          obra: obj.Obra,
-          url_audio: obj.URL_audio,
-          u_titulo: obj.U_titulo,
-          u_url: obj.U_url,
-          e_titulo: obj.E_titulo,
-          e_url: obj.E_url
-        }));
-
-        document.getElementById('pantalla-inicial').classList.add('hidden');
-        document.getElementById('pantalla-audicion').classList.remove('hidden');
-        generarOpciones();
-        siguienteAudicion();
-      });
-  }
+function iniciarSesion() {
+  const curso = document.getElementById('select-curso').value;
+  const trimestre = document.getElementById('select-trimestre').value;
+  const clave = `H${curso}tr${trimestre}`;
+  const url = hojaURLs[clave];
+  actualizarFondo(clave);
+  document.getElementById('boton-empezar').disabled = true;
+  document.getElementById('cargando').classList.remove('hidden');
+  fetch(url)
+    .then(res => res.text())
+    .then(texto => {
+      const resultado = Papa.parse(texto, { header: true, skipEmptyLines: true });
+      datos = resultado.data.map(obj => ({
+        autor: obj.Autor,
+        obra: obj.Obra,
+        url_audio: obj.URL_audio,
+        u_titulo: obj.U_titulo,
+        u_url: obj.U_url,
+        e_titulo: obj.E_titulo,
+        e_url: obj.E_url
+      }));
+      document.getElementById('pantalla-inicial').classList.add('hidden');
+      document.getElementById('pantalla-audicion').classList.remove('hidden');
+      generarOpciones();
+      siguienteAudicion();
+    });
+}
 </script>
 </body>
 </html>
