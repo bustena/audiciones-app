@@ -80,10 +80,199 @@
 </head>
 <body>
   <main>
-    <!-- UI and logic elements... -->
+    <div id="pantalla-inicial">
+      <h2>Selecciona curso y trimestre</h2>
+      <label>Curso:
+        <select id="select-curso">
+          <option value="1">1º</option>
+          <option value="2">2º</option>
+        </select>
+      </label>
+      <label style="margin-left: 20px;">Trimestre:
+        <select id="select-trimestre">
+          <option value="1">1º</option>
+          <option value="2">2º</option>
+          <option value="3">3º</option>
+        </select>
+      </label>
+      <br><br>
+      <button id="boton-empezar" onclick="iniciarSesion()">Empezar</button>
+      <span id="cargando" class="hidden" style="margin-left: 10px;">Cargando datos...</span>
+    </div>
+
+    <div id="pantalla-audicion" class="hidden">
+      <h2>Escucha la audición</h2>
+      <audio id="audio" style="visibility:hidden;"></audio>
+      <div class="bloque">
+        <span id="indicador-audio">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
+      </div>
+      <div id="lista-opciones" class="bloque"></div>
+      <div id="feedback" class="bloque" style="display:none; font-weight:bold;"></div>
+      <button id="boton-siguiente" class="hidden" onclick="siguienteAudicion()">Siguiente audición</button>
+      <div id="contador" class="bloque">Aciertos: 0 · Fallos: 0</div>
+      <button onclick="finalizar()" style="background-color:#888; color:white; font-size:0.85em; opacity:0.8;">Finalizar</button>
+    </div>
   </main>
+
 <script>
-  // JavaScript content omitted for brevity
+  const hojaURLs = {
+    H1tr1: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1251501192&single=true&output=csv',
+    H1tr2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=355259796&single=true&output=csv',
+    H1tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=923004067&single=true&output=csv',
+    H2tr1: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=991944699&single=true&output=csv',
+    H2tr2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1251501192&single=true&output=csv',
+    H2tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1487547326&single=true&output=csv'
+  };
+
+  let datos = [], actual = -1, aciertos = 0, fallos = 0;
+  let cuentaIntervalo, audioTimeout;
+  const CONS = 40;
+
+  function iniciarSesion() {
+    const curso = document.getElementById('select-curso').value;
+    const trimestre = document.getElementById('select-trimestre').value;
+    const clave = `H${curso}tr${trimestre}`;
+    const url = hojaURLs[clave];
+
+    document.getElementById('boton-empezar').disabled = true;
+    document.getElementById('cargando').classList.remove('hidden');
+
+    fetch(url)
+      .then(res => res.text())
+      .then(texto => {
+        const resultado = Papa.parse(texto, { header: true, skipEmptyLines: true });
+        datos = resultado.data.map(obj => ({
+          autor: obj.Autor,
+          obra: obj.Obra,
+          url_audio: obj.URL_audio,
+          u_titulo: obj.U_titulo,
+          u_url: obj.U_url,
+          e_titulo: obj.E_titulo,
+          e_url: obj.E_url
+        }));
+
+        document.getElementById('pantalla-inicial').classList.add('hidden');
+        document.getElementById('pantalla-audicion').classList.remove('hidden');
+        generarOpciones();
+        siguienteAudicion();
+      });
+  }
+
+  function generarOpciones() {
+    const contenedor = document.getElementById('lista-opciones');
+    contenedor.innerHTML = '';
+    datos.forEach((entrada, i) => {
+      const fila = document.createElement('div');
+      fila.className = 'opcion-container';
+      const boton = document.createElement('button');
+      boton.textContent = `${i + 1}. ${entrada.autor}: ${entrada.obra}`;
+      boton.className = 'opcion';
+      boton.onclick = () => evaluarRespuesta(i, boton);
+      const enlace = document.createElement('a');
+      enlace.href = entrada.e_url;
+      enlace.textContent = 'ℹ️';
+      enlace.className = 'info-link';
+      enlace.target = '_blank';
+      fila.appendChild(boton);
+      fila.appendChild(enlace);
+      contenedor.appendChild(fila);
+    });
+  }
+
+  function siguienteAudicion() {
+    const audio = document.getElementById('audio');
+    clearInterval(cuentaIntervalo);
+    clearTimeout(audioTimeout);
+    audio.pause();
+    audio.src = '';
+    document.getElementById('cuenta-atras').textContent = '';
+    document.getElementById('indicador-audio').style.display = 'none';
+    document.getElementById('feedback').style.display = 'none';
+    document.getElementById('boton-siguiente').classList.add('hidden');
+
+    actual = Math.floor(Math.random() * datos.length);
+    const entrada = datos[actual];
+    audio.src = entrada.url_audio;
+    audio.load();
+
+    document.querySelectorAll('.opcion').forEach(btn => {
+      btn.disabled = false;
+      btn.style.backgroundColor = '';
+      btn.style.color = '';
+    });
+
+    audio.addEventListener('loadedmetadata', function reproducir() {
+      const duracion = audio.duration;
+      const inicio = duracion > CONS ? Math.random() * (duracion - CONS) : 0;
+      audio.currentTime = inicio;
+      audio.volume = 1;
+      audio.play();
+
+      document.getElementById('indicador-audio').style.display = 'inline';
+      let restantes = CONS;
+      document.getElementById('cuenta-atras').textContent = `${restantes}s`;
+
+      cuentaIntervalo = setInterval(() => {
+        restantes--;
+        document.getElementById('cuenta-atras').textContent = `${restantes}s`;
+      }, 1000);
+
+      audioTimeout = setTimeout(() => {
+        clearInterval(cuentaIntervalo);
+        document.getElementById('cuenta-atras').textContent = '';
+        document.getElementById('indicador-audio').style.display = 'none';
+        audio.pause();
+        mostrarFeedback(false, `⏱️ Tiempo agotado. Era: ${entrada.autor}: ${entrada.obra}`);
+      }, CONS * 1000);
+
+      audio.removeEventListener('loadedmetadata', reproducir);
+    });
+  }
+
+  function evaluarRespuesta(indice, boton) {
+    clearInterval(cuentaIntervalo);
+    clearTimeout(audioTimeout);
+    document.getElementById('cuenta-atras').textContent = '';
+    document.getElementById('indicador-audio').style.display = 'none';
+    document.getElementById('audio').pause();
+    const correcta = indice === actual;
+    if (correcta) {
+      aciertos++;
+      boton.style.backgroundColor = '#00aa55';
+      boton.style.color = 'white';
+      mostrarFeedback(true, '✔️ ¡Correcto!');
+    } else {
+      fallos++;
+      boton.style.backgroundColor = '#cc3333';
+      boton.style.color = 'white';
+      mostrarFeedback(false, `✖️ Incorrecto. Era: ${datos[actual].autor}: ${datos[actual].obra}`);
+    }
+  }
+
+  function mostrarFeedback(ok, mensaje) {
+    document.querySelectorAll('.opcion').forEach(btn => btn.disabled = true);
+    const f = document.getElementById('feedback');
+    f.textContent = mensaje;
+    f.style.display = 'block';
+    document.getElementById('contador').textContent = `Aciertos: ${aciertos} · Fallos: ${fallos}`;
+    document.getElementById('boton-siguiente').classList.remove('hidden');
+  }
+
+  function finalizar() {
+    const audio = document.getElementById('audio');
+    clearInterval(cuentaIntervalo);
+    clearTimeout(audioTimeout);
+    audio.pause();
+    audio.src = '';
+    aciertos = 0;
+    fallos = 0;
+    document.getElementById('contador').textContent = 'Aciertos: 0 · Fallos: 0';
+    document.getElementById('pantalla-audicion').classList.add('hidden');
+    document.getElementById('pantalla-inicial').classList.remove('hidden');
+    document.getElementById('boton-empezar').disabled = false;
+    document.getElementById('cargando').classList.add('hidden');
+  }
 </script>
 </body>
 </html>
+
