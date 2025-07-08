@@ -16,7 +16,7 @@ const fondoColores = {
   H2tr3: '#f9fbe7'
 };
 
-let datos = [], actual = -1, aciertos = 0, fallos = 0;
+let datos = [], actual = -1, anterior = -1, aciertos = 0, fallos = 0;
 let cuentaIntervalo, audioTimeout;
 const CONS = 40;
 
@@ -85,7 +85,10 @@ function siguienteAudicion() {
   document.getElementById('feedback').style.display = 'none';
   document.getElementById('boton-siguiente').classList.add('hidden');
 
-  actual = Math.floor(Math.random() * datos.length);
+  do {
+    actual = Math.floor(Math.random() * datos.length);
+  } while (actual === anterior && datos.length > 1);
+  anterior = actual;
   const entrada = datos[actual];
   audio.src = entrada.url_audio;
   audio.load();
