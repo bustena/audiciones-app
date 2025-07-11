@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Entrenamiento de audiciones</title>
+  <title>ESTAMOS EN PRUEBAS</title>
   <link rel="icon" href="https://bustena.wordpress.com/wp-content/uploads/2023/02/cropped-icon-piano.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
@@ -26,29 +26,21 @@
     <button onclick="iniciarSesion('H2tr3')">3er trimestre</button>
   </div>
 
-  <div id="cargando" class="cargando hidden">Cargando datos...</div>
+  <div id="cargando" class="hidden">Cargando datos...</div>
 
   <main>
     <div id="pantalla-audicion" class="hidden">
       <h2>Identifica la audición</h2>
       <audio id="audio" style="visibility:hidden;"></audio>
       <div class="bloque">
-        <span id="indicador-audio" style="display:none;">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
+        <span id="indicador-audio" class="hidden">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
       </div>
       <div id="lista-opciones" class="bloque"></div>
-      <div id="feedback" class="bloque" style="display:none;"></div>
+      <div id="feedback" class="bloque hidden"></div>
       <button id="boton-siguiente" class="hidden" onclick="siguienteAudicion()">Siguiente audición</button>
       <div id="contador" class="bloque hidden">Aciertos: 0 · Fallos: 0</div>
-      <button onclick="finalizar()" class="boton-finalizar hidden">Finalizar</button>
+      <button id="boton-finalizar" class="hidden" onclick="finalizar()">Finalizar</button>
     </div>
   </main>
-
-  <footer class="footer">
-    <a href="https://bustena.wordpress.com/" target="_blank">
-      <img src="https://bustena.wordpress.com/wp-content/uploads/2023/02/cropped-icon-piano.png?w=200" alt="icono" class="fo">
-    </a>
-  </footer>
-
-  <script src="app.js"></script>
 </body>
 </html>
