@@ -64,3 +64,8 @@ h1, h2 {
   font-size: 0.9rem;
   font-weight: 400;
 }
+
+.hidden {
+  display: none !important;
+}
+
