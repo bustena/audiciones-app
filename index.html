@@ -1,43 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <title>Audiciones HM</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrenamiento de audiciones</title>
   <link rel="icon" href="https://bustena.wordpress.com/wp-content/uploads/2023/02/cropped-icon-piano.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <a href="https://bustena.wordpress.com/" target="_blank">
-      <img src="https://bustena.wordpress.com/wp-content/uploads/2023/02/cropped-icon-piano.png" alt="icono">
-      Historia de la Música
-    </a>
-    <small>Las Tres Edades de la Música Occidental</small>
-  </header>
-  <main>
-    <div id="pantalla-inicial">
-      <h2 style="margin-top: 20px;">Selecciona curso y trimestre</h2>
-      <label>Curso:
-        <select id="select-curso">
-          <option value="1">1º</option>
-          <option value="2">2º</option>
-        </select>
-      </label>
-      <label style="margin-left: 20px;">Trimestre:
-        <select id="select-trimestre">
-          <option value="1">1º</option>
-          <option value="2">2º</option>
-          <option value="3">3º</option>
-        </select>
-      </label>
-      <br><br>
-      <button id="boton-empezar" onclick="iniciarSesion()">Empezar</button>
-      <span id="cargando" class="hidden" style="margin-left: 10px;">Cargando datos...</span>
-    </div>
+  <h1>Entrena tus audiciones</h1>
 
+  <div class="botonera">
+    <button onclick="iniciarSesion('H1tr1')">Historia 1 (1er trimestre)</button>
+    <button onclick="iniciarSesion('H1tr2')">Historia 1 (2º trimestre)</button>
+    <button onclick="iniciarSesion('H1tr3')">Historia 1 (3er trimestre)</button>
+  </div>
+  <div class="botonera">
+    <button onclick="iniciarSesion('H2tr1')">Historia 2 (1er trimestre)</button>
+    <button onclick="iniciarSesion('H2tr2')">Historia 2 (2º trimestre)</button>
+    <button onclick="iniciarSesion('H2tr3')">Historia 2 (3er trimestre)</button>
+  </div>
+
+  <div id="cargando" class="cargando hidden">Cargando datos...</div>
+
+  <main>
     <div id="pantalla-audicion" class="hidden">
       <h2>Identifica la audición</h2>
       <audio id="audio" style="visibility:hidden;"></audio>
@@ -45,12 +32,21 @@
         <span id="indicador-audio">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
       </div>
       <div id="lista-opciones" class="bloque"></div>
-      <div id="feedback" class="bloque" style="display:none; font-weight:bold;"></div>
+      <div id="feedback" class="bloque" style="display:none;"></div>
       <button id="boton-siguiente" class="hidden" onclick="siguienteAudicion()">Siguiente audición</button>
       <div id="contador" class="bloque">Aciertos: 0 · Fallos: 0</div>
-      <button onclick="finalizar()" style="background-color:#888; color:white; font-size:0.85em; opacity:0.8;">Finalizar</button>
+      <button onclick="finalizar()" class="boton-finalizar">Finalizar</button>
     </div>
   </main>
-<script src="script.js"></script>
+
+  <div class="footer">
+    <a href="https://bustena.wordpress.com/" target="_blank">
+      <img src="https://bustena.wordpress.com/wp-content/uploads/2023/02/cropped-icon-piano.png" alt="icono" class="footer-icon" />
+      <span class="footer-title">Historia de la Música</span>
+    </a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
