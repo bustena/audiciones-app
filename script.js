@@ -26,13 +26,9 @@ function actualizarFondo(clave) {
   }
 }
 
-function iniciarSesion() {
-  const curso = document.getElementById('select-curso').value;
-  const trimestre = document.getElementById('select-trimestre').value;
-  const clave = `H${curso}tr${trimestre}`;
+function iniciarSesion(clave) {
   const url = hojaURLs[clave];
   actualizarFondo(clave);
-  document.getElementById('boton-empezar').disabled = true;
   document.getElementById('cargando').classList.remove('hidden');
   fetch(url)
     .then(res => res.text())
@@ -47,12 +43,14 @@ function iniciarSesion() {
         e_titulo: obj.E_titulo,
         e_url: obj.E_url
       }));
-      document.getElementById('pantalla-inicial').classList.add('hidden');
+      document.querySelector('.botonera').classList.add('hidden');
+      document.getElementById('cargando').classList.add('hidden');
       document.getElementById('pantalla-audicion').classList.remove('hidden');
       generarOpciones();
       siguienteAudicion();
     });
 }
+
   function generarOpciones() {
   const contenedor = document.getElementById('lista-opciones');
   contenedor.innerHTML = '';
