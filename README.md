@@ -1,1 +1,1 @@
-Aplicación de entrenamiento de audiciones de Historia de la Música. Tras seleccionar el trimestre correcto van sonando audiciones aleatorias de 40''. Se lanza mediante https://historia-musica-audiciones.netlify.app/
+Aplicación de entrenamiento de audiciones de Historia de la Música. Tras seleccionar el trimestre correcto van sonando audiciones aleatorias de 40''. Se lanza mediante https://entrenador-audiciones.netlify.app/
