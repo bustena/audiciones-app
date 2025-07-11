@@ -135,6 +135,13 @@ function evaluarRespuesta(indice, boton) {
     fallos++;
     boton.style.backgroundColor = '#cc3333';
     boton.style.color = 'white';
+
+    // Marcar también la opción correcta en verde
+    const botones = document.querySelectorAll('.opcion');
+    const botonCorrecto = botones[actual];
+    botonCorrecto.style.backgroundColor = '#00aa55';
+    botonCorrecto.style.color = 'white';
+
     mostrarFeedback(false, `✖️ Incorrecto. Era: ${datos[actual].autor}: ${datos[actual].obra}`);
   }
 }
