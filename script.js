@@ -7,28 +7,12 @@ const hojaURLs = {
   H2tr3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTb2p1IwuAK7jqnep9w4K5Vnmi-66ugFXv8JYTWRuDEIWDv7hGGlj7qk6SyU7ulW9DklaZ4-vIuehou/pub?gid=1487547326&single=true&output=csv'
 };
 
-const fondoColores = {
-  H1tr1: '#fdecef',
-  H1tr2: '#ffeccf',
-  H1tr3: '#e8f8ec',
-  H2tr1: '#e5f0ff',
-  H2tr2: '#f3e5f5',
-  H2tr3: '#f9fbe7'
-};
-
 let datos = [], actual = -1, anterior = -1, aciertos = 0, fallos = 0;
 let cuentaIntervalo, audioTimeout;
 const CONS = 40;
 
-function actualizarFondo(clave) {
-  if (fondoColores[clave]) {
-    document.body.style.backgroundColor = fondoColores[clave];
-  }
-}
-
 function iniciarSesion(clave) {
   const url = hojaURLs[clave];
-  actualizarFondo(clave);
   document.getElementById('cargando').classList.remove('hidden');
   fetch(url)
     .then(res => res.text())
@@ -43,7 +27,7 @@ function iniciarSesion(clave) {
         e_titulo: obj.E_titulo,
         e_url: obj.E_url
       }));
-      document.querySelector('.botonera').classList.add('hidden');
+      document.querySelectorAll('.botonera').forEach(b => b.classList.add('hidden'));
       document.getElementById('cargando').classList.add('hidden');
       document.getElementById('pantalla-audicion').classList.remove('hidden');
       generarOpciones();
@@ -51,7 +35,7 @@ function iniciarSesion(clave) {
     });
 }
 
-  function generarOpciones() {
+function generarOpciones() {
   const contenedor = document.getElementById('lista-opciones');
   contenedor.innerHTML = '';
   datos.forEach((entrada, i) => {
@@ -132,39 +116,4 @@ function evaluarRespuesta(indice, boton) {
   document.getElementById('indicador-audio').style.display = 'none';
   document.getElementById('audio').pause();
   const correcta = indice === actual;
-  if (correcta) {
-    aciertos++;
-    boton.style.backgroundColor = '#00aa55';
-    boton.style.color = 'white';
-    mostrarFeedback(true, '✔️ ¡Correcto!');
-  } else {
-    fallos++;
-    boton.style.backgroundColor = '#cc3333';
-    boton.style.color = 'white';
-    mostrarFeedback(false, `✖️ Incorrecto. Era: ${datos[actual].autor}: ${datos[actual].obra}`);
-  }
-}
-
-function mostrarFeedback(ok, mensaje) {
-  document.querySelectorAll('.opcion').forEach(btn => btn.disabled = true);
-  const f = document.getElementById('feedback');
-  f.textContent = mensaje;
-  f.style.display = 'block';
-  document.getElementById('contador').textContent = `Aciertos: ${aciertos} · Fallos: ${fallos}`;
-  document.getElementById('boton-siguiente').classList.remove('hidden');
-}
-
-function finalizar() {
-  const audio = document.getElementById('audio');
-  clearInterval(cuentaIntervalo);
-  clearTimeout(audioTimeout);
-  audio.pause();
-  audio.src = '';
-  aciertos = 0;
-  fallos = 0;
-  document.getElementById('contador').textContent = 'Aciertos: 0 · Fallos: 0';
-  document.getElementById('pantalla-audicion').classList.add('hidden');
-  document.getElementById('pantalla-inicial').classList.remove('hidden');
-  document.getElementById('boton-empezar').disabled = false;
-  document.getElementById('cargando').classList.add('hidden');
-}
+  if
