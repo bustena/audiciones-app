@@ -12,9 +12,8 @@ let cuentaIntervalo, audioTimeout;
 const CONS = 40;
 
 function iniciarSesion(clave) {
-  const url = hojaURLs[clave];
   document.getElementById('cargando').classList.remove('hidden');
-  fetch(url)
+  fetch(hojaURLs[clave])
     .then(res => res.text())
     .then(texto => {
       const resultado = Papa.parse(texto, { header: true, skipEmptyLines: true });
@@ -22,14 +21,13 @@ function iniciarSesion(clave) {
         autor: obj.Autor,
         obra: obj.Obra,
         url_audio: obj.URL_audio,
-        u_titulo: obj.U_titulo,
-        u_url: obj.U_url,
-        e_titulo: obj.E_titulo,
         e_url: obj.E_url
       }));
       document.querySelectorAll('.botonera').forEach(b => b.classList.add('hidden'));
-      document.getElementById('cargando').classList.add('hidden');
       document.getElementById('pantalla-audicion').classList.remove('hidden');
+      document.getElementById('contador').classList.remove('hidden');
+      document.querySelector('.boton-finalizar').classList.remove('hidden');
+      document.getElementById('cargando').classList.add('hidden');
       generarOpciones();
       siguienteAudicion();
     });
@@ -87,7 +85,6 @@ function siguienteAudicion() {
     audio.currentTime = inicio;
     audio.volume = 1;
     audio.play();
-
     document.getElementById('indicador-audio').style.display = 'inline';
     let restantes = CONS;
     document.getElementById('cuenta-atras').textContent = `${restantes}s`;
@@ -116,4 +113,22 @@ function evaluarRespuesta(indice, boton) {
   document.getElementById('indicador-audio').style.display = 'none';
   document.getElementById('audio').pause();
   const correcta = indice === actual;
-  if
+  if (correcta) {
+    aciertos++;
+    boton.style.backgroundColor = '#00aa55';
+    boton.style.color = 'white';
+    mostrarFeedback(true, '✔️ ¡Correcto!');
+  } else {
+    fallos++;
+    boton.style.backgroundColor = '#cc3333';
+    boton.style.color = 'white';
+    mostrarFeedback(false, `✖️ Incorrecto. Era: ${datos[actual].autor}: ${datos[actual].obra}`);
+  }
+}
+
+function mostrarFeedback(ok, mensaje) {
+  document.querySelectorAll('.opcion').forEach(btn => btn.disabled = true);
+  const f = document.getElementById('feedback');
+  f.textContent = mensaje;
+  f.style.display = 'block';
+  do
