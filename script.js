@@ -13,6 +13,7 @@ const CONS = 40;
 
 function iniciarSesion(clave) {
   document.getElementById('cargando').classList.remove('hidden');
+
   fetch(hojaURLs[clave])
     .then(res => res.text())
     .then(texto => {
@@ -23,11 +24,13 @@ function iniciarSesion(clave) {
         url_audio: obj.URL_audio,
         e_url: obj.E_url
       }));
+
       document.querySelectorAll('.botonera').forEach(b => b.classList.add('hidden'));
       document.getElementById('pantalla-audicion').classList.remove('hidden');
       document.getElementById('contador').classList.remove('hidden');
-      document.querySelector('.boton-finalizar').classList.remove('hidden');
+      document.getElementById('boton-finalizar').classList.remove('hidden');
       document.getElementById('cargando').classList.add('hidden');
+
       generarOpciones();
       siguienteAudicion();
     });
@@ -61,14 +64,15 @@ function siguienteAudicion() {
   audio.pause();
   audio.src = '';
   document.getElementById('cuenta-atras').textContent = '';
-  document.getElementById('indicador-audio').style.display = 'none';
-  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('indicador-audio').classList.add('hidden');
+  document.getElementById('feedback').classList.add('hidden');
   document.getElementById('boton-siguiente').classList.add('hidden');
 
   do {
     actual = Math.floor(Math.random() * datos.length);
   } while (actual === anterior && datos.length > 1);
   anterior = actual;
+
   const entrada = datos[actual];
   audio.src = entrada.url_audio;
   audio.load();
@@ -85,7 +89,8 @@ function siguienteAudicion() {
     audio.currentTime = inicio;
     audio.volume = 1;
     audio.play();
-    document.getElementById('indicador-audio').style.display = 'inline';
+
+    document.getElementById('indicador-audio').classList.remove('hidden');
     let restantes = CONS;
     document.getElementById('cuenta-atras').textContent = `${restantes}s`;
 
@@ -97,7 +102,7 @@ function siguienteAudicion() {
     audioTimeout = setTimeout(() => {
       clearInterval(cuentaIntervalo);
       document.getElementById('cuenta-atras').textContent = '';
-      document.getElementById('indicador-audio').style.display = 'none';
+      document.getElementById('indicador-audio').classList.add('hidden');
       audio.pause();
       mostrarFeedback(false, `⏱️ Tiempo agotado. Era: ${entrada.autor}: ${entrada.obra}`);
     }, CONS * 1000);
@@ -110,8 +115,9 @@ function evaluarRespuesta(indice, boton) {
   clearInterval(cuentaIntervalo);
   clearTimeout(audioTimeout);
   document.getElementById('cuenta-atras').textContent = '';
-  document.getElementById('indicador-audio').style.display = 'none';
+  document.getElementById('indicador-audio').classList.add('hidden');
   document.getElementById('audio').pause();
+
   const correcta = indice === actual;
   if (correcta) {
     aciertos++;
@@ -130,5 +136,23 @@ function mostrarFeedback(ok, mensaje) {
   document.querySelectorAll('.opcion').forEach(btn => btn.disabled = true);
   const f = document.getElementById('feedback');
   f.textContent = mensaje;
-  f.style.display = 'block';
-  do
+  f.classList.remove('hidden');
+  document.getElementById('contador').textContent = `Aciertos: ${aciertos} · Fallos: ${fallos}`;
+  document.getElementById('boton-siguiente').classList.remove('hidden');
+}
+
+function finalizar() {
+  const audio = document.getElementById('audio');
+  clearInterval(cuentaIntervalo);
+  clearTimeout(audioTimeout);
+  audio.pause();
+  audio.src = '';
+  aciertos = 0;
+  fallos = 0;
+  document.getElementById('contador').textContent = 'Aciertos: 0 · Fallos: 0';
+  document.getElementById('pantalla-audicion').classList.add('hidden');
+  document.querySelectorAll('.botonera').forEach(b => b.classList.remove('hidden'));
+  document.getElementById('cargando').classList.add('hidden');
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('boton-siguiente').classList.add('hidden');
+}
