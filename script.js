@@ -25,8 +25,9 @@ function iniciarSesion(clave) {
         e_url: obj.E_url
       }));
 
-      // Ocultar botoneras y mostrar interfaz de audición
+      // Ocultar botoneras y títulos, mostrar interfaz de audición
       document.querySelectorAll('.botonera').forEach(b => b.classList.add('hidden'));
+      document.querySelectorAll('h2').forEach(h => h.classList.add('hidden'));
       document.getElementById('pantalla-audicion').classList.remove('hidden');
       document.getElementById('contador').classList.remove('hidden');
       document.getElementById('boton-finalizar').classList.remove('hidden');
@@ -158,6 +159,7 @@ function finalizar() {
   document.getElementById('contador').textContent = 'Aciertos: 0 · Fallos: 0';
   document.getElementById('pantalla-audicion').classList.add('hidden');
   document.querySelectorAll('.botonera').forEach(b => b.classList.remove('hidden'));
+  document.querySelectorAll('h2').forEach(h => h.classList.remove('hidden'));
   document.getElementById('cargando').classList.add('hidden');
   document.getElementById('feedback').classList.add('hidden');
   document.getElementById('boton-siguiente').classList.add('hidden');
