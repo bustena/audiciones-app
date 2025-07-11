@@ -25,14 +25,20 @@ function iniciarSesion(clave) {
         e_url: obj.E_url
       }));
 
+      // Ocultar botoneras y mostrar interfaz de audición
       document.querySelectorAll('.botonera').forEach(b => b.classList.add('hidden'));
       document.getElementById('pantalla-audicion').classList.remove('hidden');
       document.getElementById('contador').classList.remove('hidden');
       document.getElementById('boton-finalizar').classList.remove('hidden');
-      document.getElementById('cargando').classList.add('hidden');
 
+      // Generar opciones
       generarOpciones();
-      siguienteAudicion();
+
+      // Dar tiempo al navegador para renderizar antes de lanzar audio
+      setTimeout(() => {
+        document.getElementById('cargando').classList.add('hidden');
+        siguienteAudicion();
+      }, 0);
     });
 }
 
