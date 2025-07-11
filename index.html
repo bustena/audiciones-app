@@ -26,22 +26,34 @@
     <button onclick="iniciarSesion('H2tr3')">3er trimestre</button>
   </div>
 
-  <div id="cargando" class="hidden">Cargando datos...</div>
+  <div id="cargando" class="hidden bloque">Cargando datos...</div>
 
   <main>
     <div id="pantalla-audicion" class="hidden">
       <h2>Identifica la audición</h2>
+      
       <audio id="audio" style="visibility:hidden;"></audio>
+      
       <div class="bloque">
         <span id="indicador-audio" class="hidden">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
       </div>
+      
       <div id="lista-opciones" class="bloque"></div>
+      
       <div id="feedback" class="bloque hidden"></div>
-      <button id="boton-siguiente" class="hidden" onclick="siguienteAudicion()">Siguiente audición</button>
+      
+      <div class="bloque">
+        <button id="boton-siguiente" class="hidden" onclick="siguienteAudicion()">Siguiente audición</button>
+      </div>
+      
       <div id="contador" class="bloque hidden">Aciertos: 0 · Fallos: 0</div>
-      <button id="boton-finalizar" class="hidden" onclick="finalizar()">Finalizar</button>
+      
+      <div class="bloque">
+        <button id="boton-finalizar" class="hidden" onclick="finalizar()">Finalizar</button>
+      </div>
     </div>
   </main>
+
   <script src="script.js"></script>
 </body>
 </html>
