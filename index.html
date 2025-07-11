@@ -33,13 +33,13 @@
       <h2>Identifica la audición</h2>
       <audio id="audio" style="visibility:hidden;"></audio>
       <div class="bloque">
-        <span id="indicador-audio">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
+        <span id="indicador-audio" style="display:none;">● ● ● Reproduciendo... <span id="cuenta-atras"></span></span>
       </div>
       <div id="lista-opciones" class="bloque"></div>
       <div id="feedback" class="bloque" style="display:none;"></div>
       <button id="boton-siguiente" class="hidden" onclick="siguienteAudicion()">Siguiente audición</button>
-      <div id="contador" class="bloque">Aciertos: 0 · Fallos: 0</div>
-      <button onclick="finalizar()" class="boton-finalizar">Finalizar</button>
+      <div id="contador" class="bloque hidden">Aciertos: 0 · Fallos: 0</div>
+      <button onclick="finalizar()" class="boton-finalizar hidden">Finalizar</button>
     </div>
   </main>
 
